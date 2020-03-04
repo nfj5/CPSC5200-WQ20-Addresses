@@ -1,8 +1,13 @@
 from flask import Flask, request
 import json
 import re
+import pymongo
 
 app = Flask(__name__)
+
+mongo = pymongo.MongoClient("mongodb://localhost:27017/")
+db = mongo["CPSC5200-WQ"]
+address_collection = db["Addresses"]
 
 
 @app.route('/')
@@ -61,13 +66,18 @@ def insert_address():
         return {"message": "Failed to insert address", "result": "No request body."}
     data = request.json
 
+    num_inserted = 0
+    num_failed = 0
     for address in data:
         is_valid = verify_address(address, address["Country"])
-        print (address["Country"], is_valid)
 
-    return {"message": "Done"}
-    # verify the format
-    # insert into mongo
+        if is_valid:
+            address_collection.insert_one(address)
+            num_inserted += 1
+        else:
+            num_failed += 1
+
+    return {"message": "Success", "result": "Inserted "+str(num_inserted)+" addresses. "+str(num_failed)+" not inserted."}
 
 if __name__ == '__main__':
     app.run()
