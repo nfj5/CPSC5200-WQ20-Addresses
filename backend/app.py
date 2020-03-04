@@ -79,5 +79,13 @@ def insert_address():
 
     return {"message": "Success", "result": "Inserted "+str(num_inserted)+" addresses. "+str(num_failed)+" not inserted."}
 
+@app.route('/addresses')
+def get_addresses():
+    t_list = []
+    for item in address_collection.find({}, {"_id": 0}):
+        t_list.append(item)
+
+    return {"message": "Success", "result": t_list}
+
 if __name__ == '__main__':
     app.run()
