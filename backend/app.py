@@ -119,7 +119,7 @@ def insert_address():
 @app.route('/addresses')
 def get_addresses():
 	t_list = []
-	for item in address_collection.find({}, {"_id": 0}):
+	for item in address_collection.find({}, {"_id": 0}).limit(10):
 		t_list.append(item)
 
 	return get_response(200, {"result": t_list})
@@ -140,7 +140,7 @@ def get_by_country(country):
 			query[field] = {"$regex": ".*"+arg+".*"}
 
 	t_list = []
-	for item in address_collection.find(query, {"_id": 0}):
+	for item in address_collection.find(query, {"_id": 0}).limit(10):
 		t_list.append(item)
 
 	return get_response(200, {"result": t_list})
