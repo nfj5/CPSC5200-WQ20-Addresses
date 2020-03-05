@@ -12,80 +12,86 @@ address_collection = db["Addresses"]
 
 @app.route('/')
 def hello_world():
-    return 'Hello World!'
+	return 'Hello World!'
 
 
 # verify that the provided address matches the format of the country provided
 def verify_address(address, country_code):
-    # make sure that the country matches the format guidelines
-    match = re.match(r'[A-Z]{2}', country_code, flags=0)
-    if not match:
-        print("ERROR: Invalid ISO country!")
-        return False
+	# make sure that the country matches the format guidelines
+	match = re.match(r'[A-Z]{2}', country_code, flags=0)
+	if not match:
+		print("ERROR: Invalid ISO country!")
+		return False
 
-    with open('addresses2.json', encoding='utf-8') as file:
-        data = json.load(file)
+	with open('addresses2.json', encoding='utf-8') as file:
+		data = json.load(file)
 
-        # make sure that the country is present
-        if country_code not in data.keys():
-            print("Country is not present in configuration file!")
-            return False
+		# make sure that the country is present
+		if country_code not in data.keys():
+			print("Country is not present in configuration file!")
+			return False
 
-        # try to find the country
-        for country in data.keys():
-            if country == country_code:
-                format = data[country]
+		# try to find the country
+		for country in data.keys():
+			if country == country_code:
+				addr_format = data[country]
 
-                for field in format.keys():
-                    # make sure that we are not missing required fields
-                    if not field in address and format[field] != "":
-                        print("missing field", field)
-                        return False
+				for field in addr_format.keys():
+					# make sure that we are not missing required fields
+					if field not in address and addr_format[field] != "":
+						print("missing field", field)
+						return False
 
-                    # if the format has required values, check against those
-                    if isinstance(format[field], dict):
-                        if not address[field] in format[field].keys():
-                            print ("not matching options", address[field])
-                            return False
+					# if the format has required values, check against those
+					if isinstance(addr_format[field], dict):
+						if not address[field] in addr_format[field].keys():
+							print("not matching options", address[field])
+							return False
 
-                    # otherwise, check against the provided regex
-                    else:
-                        regex = format[field]
-                        if not re.match(regex, address[field], flags=0):
-                            print ("not matching regex", address[field])
-                            return False
+					# otherwise, check against the provided regex if field not required
+					elif addr_format[field] != "":
+						regex = addr_format[field]
+						if not re.match(regex, address[field], flags=0):
+							print("not matching regex", address[field])
+							return False
 
-                return True
+				return True
 
-    return False
+	return False
 
 
 @app.route('/addresses', methods=['POST'])
 def insert_address():
-    if not request.json:
-        return {"message": "Failed to insert address", "result": "No request body."}
-    data = request.json
+	if not request.json:
+		return {"message": "Failed to insert address", "result": "No request body."}
+	data = request.json
 
-    num_inserted = 0
-    num_failed = 0
-    for address in data:
-        is_valid = verify_address(address, address["Country"])
+	num_inserted = 0
+	num_failed = 0
+	for address in data:
+		if "Country" not in address:
+			num_failed += 1
+			continue
 
-        if is_valid:
-            address_collection.insert_one(address)
-            num_inserted += 1
-        else:
-            num_failed += 1
+		is_valid = verify_address(address, address["Country"])
 
-    return {"message": "Success", "result": "Inserted "+str(num_inserted)+" addresses. "+str(num_failed)+" not inserted."}
+		if is_valid:
+			address_collection.insert_one(address)
+			num_inserted += 1
+		else:
+			num_failed += 1
+
+	return {"message": "Success", "result": "Inserted "+str(num_inserted)+" addresses. "+str(num_failed)+" not inserted."}
+
 
 @app.route('/addresses')
 def get_addresses():
-    t_list = []
-    for item in address_collection.find({}, {"_id": 0}):
-        t_list.append(item)
+	t_list = []
+	for item in address_collection.find({}, {"_id": 0}):
+		t_list.append(item)
 
-    return {"message": "Success", "result": t_list}
+	return {"message": "Success", "result": t_list}
+
 
 if __name__ == '__main__':
-    app.run()
+	app.run()

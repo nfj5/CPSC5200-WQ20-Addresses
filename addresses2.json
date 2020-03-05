@@ -1,0 +1,24 @@
+{
+  "US": {
+    "Address1": "",
+    "Address2": "",
+    "City": "^[a-zA-Z]+(?:[\\s-][a-zA-Z]+)*$",
+    "State": {
+      "AL": "Alabama",
+      "AK": "Alaska",
+      "AZ": "Arizona",
+      "AR": "Arkansas",
+      "CA": "California",
+      "WA": "Washington"
+    }
+  },
+  "CA": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "Province": {
+      "AB": "Alberta",
+      "BC": "British Columbia"
+    }
+  }
+}
