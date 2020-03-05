@@ -20,6 +20,7 @@
     "Province": {
       "AB": "Alberta",
       "BC": "British Columbia"
-    }
+    },
+    "ZipCode": "^\\d{5}$"
   }
 }
