@@ -27,9 +27,13 @@ def load_formats():
 
 
 # get the address format for a specific ISO code
-def get_format(country):
+def get_format(country=None):
 	if addr_formats is None:
 		load_formats()
+
+	# return all formats if no country specified
+	if country is None:
+		return addr_formats
 
 	if country not in addr_formats:
 		return None
@@ -80,10 +84,17 @@ def verify_address(address, country_code):
 	return True
 
 
+# allow the user to read address formats, and provide accessibility for frontend
+@app.route('/formats', methods=['GET'])
+def get_formats():
+	return get_response(200, {"result": get_format()})
+
+
+# allow the user to insert an address following country formats
 @app.route('/addresses', methods=['POST'])
 def insert_address():
 	if not request.json:
-		return get_response(400, {"message": "Failed to insert address", "result": "No request body."})
+		return get_response(400, {"result": "No request body."})
 	data = request.json
 
 	num_inserted = 0
@@ -101,30 +112,38 @@ def insert_address():
 		else:
 			num_failed += 1
 
-	return get_response(200, {"message": "Success", "result": "Inserted "+str(num_inserted)+" addresses. "+str(num_failed)+" not inserted."})
+	return get_response(200, {"result": "Inserted "+str(num_inserted)+" addresses. "+str(num_failed)+" not inserted."})
 
 
+# allow the user to retrieve all stored addresses
 @app.route('/addresses')
 def get_addresses():
 	t_list = []
 	for item in address_collection.find({}, {"_id": 0}):
 		t_list.append(item)
 
-	return get_response(200, {"message": "Success", "result": t_list})
+	return get_response(200, {"result": t_list})
 
 
+# allow the user to search based on a country specific format
 @app.route('/addresses/<string:country>')
 def get_by_country(country):
 	addr_format = get_format(country)
 
 	if addr_format is None:
-		return get_response(400, {"message": "Failure", "result": "Country is not currently handled by this API."})
+		return get_response(400, {"result": "Country is not currently handled by this API."})
+
+	query = {"Country": country}
+	for field in addr_format:
+		arg = request.args.get(field)
+		if arg is not None:
+			query[field] = {"$regex": ".*"+arg+".*"}
 
 	t_list = []
-	for item in address_collection.find({"Country": country}, {"_id": 0}):
+	for item in address_collection.find(query, {"_id": 0}):
 		t_list.append(item)
 
-	return get_response(200, {"message": "Success", "result": t_list})
+	return get_response(200, {"result": t_list})
 
 
 if __name__ == '__main__':
