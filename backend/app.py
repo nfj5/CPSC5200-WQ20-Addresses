@@ -57,7 +57,7 @@ def verify_address(address, country_code):
 					# otherwise, check against the provided regex if field not required
 					elif addr_format[field] != "":
 						regex = addr_format[field]
-						if not re.match(regex, address[field], flags=0):
+						if not re.match(regex, str(address[field]), flags=0):
 							print("not matching regex", address[field])
 							return False
 

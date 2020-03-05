@@ -10,7 +10,8 @@
       "AR": "Arkansas",
       "CA": "California",
       "WA": "Washington"
-    }
+    },
+    "ZipCode": "^\\d{5}$"
   },
   "CA": {
     "Address1": "",
