@@ -36,6 +36,12 @@ def verify_address(address, country_code):
 			if country == country_code:
 				addr_format = data[country]
 
+				# make sure that this field isn't something that isn't in the format
+				for field in address:
+					if field not in addr_format and field != "Country":
+						print("extra field present", field)
+						return False
+
 				for field in addr_format.keys():
 					# make sure that we are not missing required fields
 					if field not in address and addr_format[field] != "":
