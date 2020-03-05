@@ -118,8 +118,13 @@ def insert_address():
 # allow the user to retrieve all stored addresses
 @app.route('/addresses')
 def get_addresses():
+	query = {}
+	for arg in request.args:
+		data = request.args.get(arg)
+		query[arg] = {"$regex": ".*"+data+".*"}
+
 	t_list = []
-	for item in address_collection.find({}, {"_id": 0}).limit(10):
+	for item in address_collection.find(query, {"_id": 0}).limit(10):
 		t_list.append(item)
 
 	return get_response(200, {"result": t_list})
