@@ -1,9 +1,11 @@
 from flask import Flask, request, Response
+from flask_cors import CORS
 import json
 import re
 import pymongo
 
 app = Flask(__name__)
+CORS(app)
 
 mongo = pymongo.MongoClient("mongodb://localhost:27017/")
 db = mongo["CPSC5200-WQ"]
@@ -23,6 +25,7 @@ def load_formats():
 
 	file = open('addresses2.json', encoding='utf-8')
 	addr_formats = json.load(file)
+
 	file.close()
 
 
@@ -55,6 +58,8 @@ def verify_address(address, country_code):
 	if addr_format is None:
 		print("Country is not present in configuration file!")
 		return False
+
+	addr_format = addr_format['format']
 
 	# make sure that this field isn't something that isn't in the format
 	for field in address:
