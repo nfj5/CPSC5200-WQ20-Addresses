@@ -2,18 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Addresses</title>
+    <title>International Address Search</title>
 </head>
 <body>
     <h2 id="loading">Loading...</h2>
 
-    <form action="#" id="insert_form" style="display:none; width: 25%;">
-        <h2>Insert New Address</h2>
+    <form action="#" id="insert_form" style="display:none; width: 40%;">
+        <h2>Search or Create a New Address</h2>
         <div>
             <b>Country</b><br>
             <select id="country_dropdown"></select>
         </div>
         <div id="fields" style="margin-top: 10px;"></div>
+        <div>
+                <input type="submit" name="submit" value="Search">
+                <input type="submit" name="submit" value="Create">
+        </div>
     </form>
 
     <!-- Load JS files -->
