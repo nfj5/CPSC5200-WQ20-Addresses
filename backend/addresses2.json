@@ -116,5 +116,105 @@
        },
        "CodigoPostal": ""
      }
+  },
+  "AM":{
+    "name": "Armenia",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+"AW":{
+    "name": "Aruba",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+"AU":{
+    "name": "Australia",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+ "AT":{
+   "name": "Austria",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+ "AZ":{
+   "name": "Azerbaijan",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+ "BH":{
+   "name": "Bahrain",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+ "BD":{
+   "name":	 "Bangladesh",
+   "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+ "BB":{
+   "name": "Barbados",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+  "BY":{
+   "name": "Belarus",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+   "BE":{
+   "name": "Belgium",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
   }
 }
