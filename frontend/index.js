@@ -17,8 +17,7 @@ $(document).ready(function() {
         // Please select a country
         // When empty can search all countries.
         // set the form to the first country by default
-        //let start = Object.keys(addr_formats)[0];
-        let start = "";
+        let start = Object.keys(addr_formats)[0];
         $("#country_dropdown").val(start);
         setForm(start);
     });
