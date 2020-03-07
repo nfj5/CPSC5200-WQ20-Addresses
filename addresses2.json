@@ -86,10 +86,10 @@
   "MX":{
   "name": "Mexico",
   "format": {
-    "Address1": "",
-    "Address2": "",
-    "City": "",
-    "State":{
+    "Direccion1": "",
+    "Direccion2": "",
+    "Ciudad": "",
+    "Estado":{
     "AS":"Aguascalientes",
     "BC":"Baja California",
     "BS":"Baja California Sur",
@@ -123,7 +123,7 @@
     "YN":"Yucatán",
     "ZS":"Zacatecas"
     },
-    "ZipCode":"^\\d{5}$"
+    "CodigoPostal":"^\\d{5}$"
     }
   },
 
@@ -150,9 +150,9 @@
    "AR": {
      "name": "Argentina",
      "format": {
-           "Address1": "",
-           "Address2": "",
-           "City": {
+           "Direccion1": "",
+           "Direccion2": "",
+           "Ciudad": {
              "PBA": "Buenos Aires",
              "CA": "Catamarca",
              "CH": "Chaco",
@@ -177,7 +177,7 @@
              "TF": "Tierra del Fuego",
              "TU": "Tucumán"
            },
-           "PostalCode": ""
+           "CodigoPostal": ""
          }
     }
 }
