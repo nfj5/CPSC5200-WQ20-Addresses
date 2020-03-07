@@ -126,14 +126,59 @@
     "ZipCode":"^\\d{5}$"
     }
   },
+
  "AF": {
-   "name": "Afganistan",
+   "name": "Afghanistan",
    "format": {
         "Address1": "",
         "Address2": "",
         "City": ""
       },
     "PostalCode": "^\\d{4}$"
-  }
+  },
+
+ "AL": {
+   "name": "Albania",
+   "format": {
+        "Address1": "",
+        "Address2": "",
+        "City": ""
+      },
+    "PostalCode": ""
+  },
+
+   "AR": {
+     "name": "Argentina",
+     "format": {
+           "Address1": "",
+           "Address2": "",
+           "City": {
+             "PBA": "Buenos Aires",
+             "CA": "Catamarca",
+             "CH": "Chaco",
+             "CT": "Chubut",
+             "CB": "Córdoba",
+             "CR": "Corrientes",
+             "ER": "Entre Ríos",
+             "FO": "Formosa",
+             "JY": "Jujuy",
+             "LP": "La Pampa",
+             "LR": "La Rioja",
+             "MZ": "Mendoza",
+             "MI": "Misiones",
+             "NQ": "Neuquén",
+             "RN": "Río Negro",
+             "SA": "Salta",
+             "SJ": "San Juan",
+             "SL": "San Luis",
+             "SC": "Santa Cruz",
+             "SF": "Santa Fe",
+             "SE": "Santiago del Estero",
+             "TF": "Tierra del Fuego",
+             "TU": "Tucumán"
+           },
+           "PostalCode": ""
+         }
+    }
 }
 
