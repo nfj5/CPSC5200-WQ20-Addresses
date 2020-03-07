@@ -125,5 +125,15 @@
     },
     "ZipCode":"^\\d{5}$"
     }
+  },
+ "AF": {
+   "name": "Afganistan",
+   "format": {
+        "Address1": "",
+        "Address2": "",
+        "City": ""
+      },
+    "PostalCode": "^\\d{4}$"
   }
 }
+

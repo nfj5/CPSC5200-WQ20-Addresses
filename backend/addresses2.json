@@ -62,6 +62,15 @@
     "ZS":"Zacatecas"
     },
     "ZipCode":"^\\d{5}$"
-    }
+    },
+      "AF": {
+        "name": "Afghanistan",
+        "format": {
+          "Address1": "",
+          "Address2": "",
+          "City": ""
+        },
+        "PostalCode": "^\\d{4}$"
+      }
   }
 }
