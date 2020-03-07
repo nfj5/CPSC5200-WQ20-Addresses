@@ -12,8 +12,13 @@ $(document).ready(function() {
         $("#loading").hide();
         $("#insert_form").show();
 
+        // TODO: We should not default to the first country
+        // Let's leave blank and put a msg:
+        // Please select a country
+        // When empty can search all countries.
         // set the form to the first country by default
-        let start = Object.keys(addr_formats)[0];
+        //let start = Object.keys(addr_formats)[0];
+        let start = "";
         $("#country_dropdown").val(start);
         setForm(start);
     });
