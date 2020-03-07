@@ -29,8 +29,8 @@ $(document).ready(function() {
         let form_content = "";
 
         for (let field in format) {
-            form_content += '<div style="margin-bottom: 5px;">';
-            form_content += '<b style="padding-right: 10px;">' + field + '</b><br>';
+            form_content += '<div style="margin-bottom: 10px;">';
+            form_content += '<b style="padding-right: 20px;">' + field + '</b><br>';
 
             // handle dropdown (dictionary?)
             if (typeof format[field] === "object") {
