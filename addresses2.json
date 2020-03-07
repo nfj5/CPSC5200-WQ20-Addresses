@@ -152,7 +152,7 @@
      "format": {
            "Direccion1": "",
            "Direccion2": "",
-           "Ciudad": {
+           "Provincia": {
              "PBA": "Buenos Aires",
              "CA": "Catamarca",
              "CH": "Chaco",
@@ -272,6 +272,106 @@
 },
    "BE":{
    "name": "Belgium",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+  },
+   "BZ":{
+    "name":	"Belize",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+ "BJ":{
+    "name": "Benin",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+ "BM":{
+   "name": "Bermuda",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+ "BT":{
+   "name": "Bhutan",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+  "BO":{
+   "name": "Bolivia",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+ "BA":{
+   "name": "Bosnia and Herzegovina",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+ "BW":{
+   "name": "Botswana",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+ "BV":{
+    "name":	"Bouvet Island",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+ "BR":{
+   "name": "Brazil",
+    "format": {
+    "Address1": "",
+    "Address2": "",
+    "City": "",
+    "State":"",
+    "ZipCode": ""
+    }
+},
+ "IO":{
+   "name": "British Indian Ocean Territory",
     "format": {
     "Address1": "",
     "Address2": "",
