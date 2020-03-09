@@ -79,7 +79,7 @@
         "QC": "Quebec",
         "SK": "Saskatchewan"
       },
-      "ZipCode": "^\\d{5}$"
+      "PostalCode": "^\\d{5}$"
     }
   },
 
