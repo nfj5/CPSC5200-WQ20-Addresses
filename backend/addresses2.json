@@ -13,12 +13,24 @@
     }
   },
   "CA": {
-    "Address1": "",
-    "Address2": "",
-    "City": "",
-    "Province": {
-      "AB": "Alberta",
-      "BC": "British Columbia"
+    "name": "Canada",
+    "format": {
+      "Address1": "",
+      "Address2": "",
+      "City": "",
+      "Province": {
+        "AB": "Alberta",
+        "BC": "British Columbia",
+        "MB": "Manitoba",
+        "NB": "New Brunswick",
+        "NL": "Newfoundland and Labrador",
+        "NS": "Nova Scotia",
+        "ON": "Ontario",
+        "PE": "Prince Edward Island",
+        "QC": "Quebec",
+        "SK": "Saskatchewan"
+      },
+      "PostalCode": "^\\d{5}$"
     }
   },
   "MX": {
@@ -89,6 +101,7 @@
      "format": {
        "Direccion1": "",
        "Direccion2": "",
+       "Ciudad": "",
        "Provincia": {
          "PBA": "Buenos Aires",
          "CA": "Catamarca",
@@ -727,15 +740,13 @@
 "Zipcode": ""
 }
 },
- "FR":{
+"FR":{
 "name":"France",
 "format":{
-"Address1": "",
-"Address2": "",
-"City": "",
-"State": "",
-"Zipcode": ""
-}
+"L'Addresse1": "",
+"L'Addresse2": "",
+"Departement": ""
+  }
 },
  "GF":{
 "name":"French Guiana",

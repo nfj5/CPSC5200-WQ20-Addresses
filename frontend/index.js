@@ -51,7 +51,7 @@ $(document).ready(function() {
 
             // otherwise, plain text
             else {
-                form_content += '<input id="">';
+                form_content += '<input id=""  size="34">';
             }
 
             form_content += '</div>';
