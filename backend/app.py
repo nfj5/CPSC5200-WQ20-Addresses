@@ -128,26 +128,26 @@ class Addresses(Resource):
 		for item in address_collection.find(query).limit(10):
 			t_list.append(json_format(item))
 
-		return get_response(200, {"result": t_list})
+		return get_response(200, t_list)
 
 	# allow the user to insert an address following country formats
 	def post(self):
 		if not request.json:
-			return get_response(400, {"result": "No request body."})
+			return get_response(400, {"error": "No request body."})
 		address = request.json
 
 		if "Country" not in address:
-			return get_response(400, {"result": "No country specified."})
+			return get_response(400, {"error": "No country specified."})
 
 		is_valid = verify_address(address, address["Country"])
 
 		if not is_valid:
-			return get_response(400, {"result": "Address format is not valid for the specified country."})
+			return get_response(400, {"error": "Address format is not valid for the specified country."})
 
 		insertion = address_collection.insert_one(address)
 		address["_id"] = str(insertion.inserted_id)
 
-		return get_response(200, {"result": json_format(address)})
+		return get_response(200, json_format(address))
 
 
 @namespace.route('/<string:address_id>')
@@ -159,21 +159,21 @@ class AddressById(Resource):
 			item = {}
 			if result.count() == 1:
 				item = json_format(result[0])
-			return get_response(200, {"result": item})
+			return get_response(200, item)
 		except InvalidId:
-			return get_response(400, {"result": "Invalid ObjectId sequence"})
+			return get_response(400, {"error": "Invalid ObjectId sequence"})
 
 	# allow the user to update the specified address
 	def put(self, address_id):
 		if not request.json:
-			return get_response(400, {"result": "No request body."})
+			return get_response(400, {"error": "No request body."})
 		address = request.json
 
 		try:
 			# see if the address exists in the database for updating
 			to_update = address_collection.find_one({"_id": ObjectId(address_id)})
 			if not to_update:
-				return get_response(400, {"result": "Address has not yet been created."})
+				return get_response(400, {"error": "Address has not yet been created."})
 
 			# make sure that we are only updating fields that are part of the format
 			curr_format = get_format(to_update['Country'])['format']
@@ -184,13 +184,13 @@ class AddressById(Resource):
 					to_update[field] = address[field]
 
 			if len(address) == 0:
-				return get_response(400, {"result": "No valid fields to update."})
+				return get_response(400, {"error": "No valid fields to update."})
 
 			# update the item and return the new address
 			address_collection.update_one({"_id": ObjectId(address_id)}, {"$set": address}, upsert=False)
-			return get_response(200, {"result": json_format(to_update)})
+			return get_response(200, json_format(to_update))
 		except InvalidId:
-			return get_response(400, {"result": "Invalid ObjectId sequence"})
+			return get_response(400, {"error": "Invalid ObjectId sequence"})
 
 
 # allow the user to search based on a country specific format
@@ -212,7 +212,7 @@ class GetByCountry(Resource):
 		for item in address_collection.find(query).limit(10):
 			t_list.append(json_format(item))
 
-		return get_response(200, {"result": t_list})
+		return get_response(200, t_list)
 
 
 if __name__ == '__main__':
