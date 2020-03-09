@@ -1,5 +1,7 @@
 from flask import Flask, request, Response
 from flask_cors import CORS
+from bson.errors import InvalidId
+from bson.objectid import ObjectId
 import json
 import re
 import pymongo
@@ -17,6 +19,12 @@ addr_formats = None
 # construct a Flask Response object
 def get_response(code, content):
 	return Response(json.dumps(content), status=code, mimetype="application/json")
+
+
+# format the address object for sending as JSON
+def json_format(address):
+	address['_id'] = str(address['_id'])
+	return address
 
 
 # load address formats from a file
@@ -100,25 +108,50 @@ def get_formats():
 def insert_address():
 	if not request.json:
 		return get_response(400, {"result": "No request body."})
-	data = request.json
+	address = request.json
 
-	num_inserted = 0
-	num_failed = 0
-	for address in data:
-		if "Country" not in address:
-			num_failed += 1
-			continue
+	if "Country" not in address:
+		return get_response(400, {"result": "No country specified."})
 
-		is_valid = verify_address(address, address["Country"])
+	is_valid = verify_address(address, address["Country"])
 
-		if is_valid:
-			address_collection.insert_one(address)
-			num_inserted += 1
-		else:
-			num_failed += 1
+	if not is_valid:
+		return get_response(400, {"result": "Address format is not valid for the specified country."})
 
-	return get_response(200, {"result": "Inserted "+str(num_inserted)+" addresses. "+str(num_failed)+" not inserted."})
+	insertion = address_collection.insert_one(address)
+	address["_id"] = str(insertion.inserted_id)
 
+	return get_response(200, {"result": json_format(address)})
+
+
+@app.route("/addresses/<addressId>", methods=['PUT'])
+def update_address(addressId):
+	if not request.json:
+		return get_response(400, {"result": "No request body."})
+	address = request.json
+
+	try:
+		# see if the address exists in the database for updating
+		to_update = address_collection.find_one({"_id": ObjectId(addressId)})
+		if not to_update:
+			return get_response(400, {"result": "Address has not yet been created."})
+
+		# make sure that we are only updating fields that are part of the format
+		curr_format = get_format(to_update['Country'])['format']
+		for field in list(address):
+			if field not in curr_format or field == 'Country':
+				del address[field]
+			else:
+				to_update[field] = address[field]
+
+		if len(address) == 0:
+			return get_response(400, {"result": "No valid fields to update."})
+
+		# update the item and return the new address
+		address_collection.update_one({"_id": ObjectId(addressId)}, {"$set": address}, upsert=False)
+		return get_response(200, {"result": json_format(to_update)})
+	except InvalidId:
+		return get_response(400, {"result": "Invalid ObjectId sequence"})
 
 # allow the user to retrieve all stored addresses
 @app.route('/addresses')
@@ -126,17 +159,17 @@ def get_addresses():
 	query = {}
 	for arg in request.args:
 		data = request.args.get(arg)
-		query[arg] = {"$regex": ".*"+data+".*"}
+		query[arg] = {"$regex": ".*" + data + ".*"}
 
 	t_list = []
-	for item in address_collection.find(query, {"_id": 0}).limit(10):
-		t_list.append(item)
+	for item in address_collection.find(query).limit(10):
+		t_list.append(json_format(item))
 
 	return get_response(200, {"result": t_list})
 
 
 # allow the user to search based on a country specific format
-@app.route('/addresses/<string:country>')
+@app.route('/addresses/country/<string:country>')
 def get_by_country(country):
 	addr_format = get_format(country)
 
@@ -147,13 +180,26 @@ def get_by_country(country):
 	for field in addr_format:
 		arg = request.args.get(field)
 		if arg is not None:
-			query[field] = {"$regex": ".*"+arg+".*"}
+			query[field] = {"$regex": ".*" + arg + ".*"}
 
 	t_list = []
-	for item in address_collection.find(query, {"_id": 0}).limit(10):
-		t_list.append(item)
+	for item in address_collection.find(query).limit(10):
+		t_list.append(json_format(item))
 
 	return get_response(200, {"result": t_list})
+
+
+# get a specific address based upon the identifier
+@app.route('/addresses/<addressId>')
+def get_address(addressId):
+	try:
+		result = address_collection.find({"_id": ObjectId(addressId)})
+		item = {}
+		if result.count() == 1:
+			item = json_format(result[0])
+		return get_response(200, {"result": item})
+	except InvalidId:
+		return get_response(400, {"result": "Invalid ObjectId sequence"})
 
 
 if __name__ == '__main__':

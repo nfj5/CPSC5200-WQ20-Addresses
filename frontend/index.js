@@ -18,8 +18,7 @@ $(document).ready(function() {
         // When empty can search all countries.
         // set the form to the first country by default
         let start = Object.keys(addr_formats)[0];
-        $("#country_dropdown").val(start);
-        setForm(start);
+        $("#country_dropdown").val(null);
     });
 
     // change fields when the dropdown changes
@@ -55,5 +54,13 @@ $(document).ready(function() {
 
         $("#fields").html(form_content);
     }
+
+    $("#search").click(function() {
+        // $.get("/addresses")
+    });
+
+    $("#create").click(function() {
+        // $.post("/addresses")
+    });
 
 });
