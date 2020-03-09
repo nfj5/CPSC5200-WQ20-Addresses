@@ -152,6 +152,7 @@
      "format": {
            "Direccion1": "",
            "Direccion2": "",
+           "Ciudad": "",
            "Provincia": {
              "PBA": "Buenos Aires",
              "CA": "Catamarca",
@@ -788,17 +789,15 @@
 "City": "",
 "State": "",
 "ZipCode": ""
-}
+  }
 },
  "FR":{
 "name":"France",
 "format":{
-"Address1": "",
-"Address2": "",
-"City": "",
-"State": "",
-"ZipCode": ""
-}
+"L'Addresse1": "",
+"L'Addresse2": "",
+"Departement": ""
+  }
 },
  "GF":{
 "name":"French Guiana",
