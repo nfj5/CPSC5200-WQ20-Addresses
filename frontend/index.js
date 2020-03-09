@@ -4,7 +4,12 @@ $(document).ready(function() {
 
     // load formats
     $.get("http://localhost:5000/formats", function(response){
-        addr_formats = response.result;
+        if (!response) {
+            $("#loading").html("Failed to load formats");
+            return;
+        }
+
+        addr_formats = response;
         for (let country in addr_formats) {
             $("#country_dropdown").append(`<option value="${country}">${addr_formats[country]['name']}</option>`);
         }

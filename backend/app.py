@@ -1,13 +1,24 @@
 from flask import Flask, request, Response
 from flask_cors import CORS
+from flask_restplus import Api, Resource
 from bson.errors import InvalidId
 from bson.objectid import ObjectId
 import json
 import re
 import pymongo
 
-app = Flask(__name__)
-CORS(app)
+VERSION = "0.1.0"
+
+flask_app = Flask(__name__)
+CORS(flask_app)
+app = Api(
+		app=flask_app,
+		version=VERSION,
+		name="AddressAPI",
+		description="API for storing/updating/retrieving world addresses.")
+
+namespace = app.namespace('addresses', description='Main API version ' + VERSION)
+format_namespace = app.namespace('formats', description='Address format endpoints')
 
 mongo = pymongo.MongoClient("mongodb://localhost:27017/")
 db = mongo["CPSC5200-WQ"]
@@ -98,109 +109,111 @@ def verify_address(address, country_code):
 
 
 # allow the user to read address formats, and provide accessibility for frontend
-@app.route('/formats', methods=['GET'])
-def get_formats():
-	return get_response(200, {"result": get_format()})
+@format_namespace.route('/')
+class GetFormats(Resource):
+	def get(self):
+		return get_response(200, get_format())
 
 
-# allow the user to insert an address following country formats
-@app.route('/addresses', methods=['POST'])
-def insert_address():
-	if not request.json:
-		return get_response(400, {"result": "No request body."})
-	address = request.json
+@namespace.route('/')
+class Addresses(Resource):
+	# allow the user to retrieve all stored addresses
+	def get(self):
+		query = {}
+		for arg in request.args:
+			data = request.args.get(arg)
+			query[arg] = {"$regex": ".*" + data + ".*"}
 
-	if "Country" not in address:
-		return get_response(400, {"result": "No country specified."})
+		t_list = []
+		for item in address_collection.find(query).limit(10):
+			t_list.append(json_format(item))
 
-	is_valid = verify_address(address, address["Country"])
+		return get_response(200, {"result": t_list})
 
-	if not is_valid:
-		return get_response(400, {"result": "Address format is not valid for the specified country."})
+	# allow the user to insert an address following country formats
+	def post(self):
+		if not request.json:
+			return get_response(400, {"result": "No request body."})
+		address = request.json
 
-	insertion = address_collection.insert_one(address)
-	address["_id"] = str(insertion.inserted_id)
+		if "Country" not in address:
+			return get_response(400, {"result": "No country specified."})
 
-	return get_response(200, {"result": json_format(address)})
+		is_valid = verify_address(address, address["Country"])
+
+		if not is_valid:
+			return get_response(400, {"result": "Address format is not valid for the specified country."})
+
+		insertion = address_collection.insert_one(address)
+		address["_id"] = str(insertion.inserted_id)
+
+		return get_response(200, {"result": json_format(address)})
 
 
-@app.route("/addresses/<addressId>", methods=['PUT'])
-def update_address(addressId):
-	if not request.json:
-		return get_response(400, {"result": "No request body."})
-	address = request.json
+@namespace.route('/<string:address_id>')
+class AddressById(Resource):
+	# get a specific address based upon the identifier
+	def get(self, address_id):
+		try:
+			result = address_collection.find({"_id": ObjectId(address_id)})
+			item = {}
+			if result.count() == 1:
+				item = json_format(result[0])
+			return get_response(200, {"result": item})
+		except InvalidId:
+			return get_response(400, {"result": "Invalid ObjectId sequence"})
 
-	try:
-		# see if the address exists in the database for updating
-		to_update = address_collection.find_one({"_id": ObjectId(addressId)})
-		if not to_update:
-			return get_response(400, {"result": "Address has not yet been created."})
+	# allow the user to update the specified address
+	def put(self, address_id):
+		if not request.json:
+			return get_response(400, {"result": "No request body."})
+		address = request.json
 
-		# make sure that we are only updating fields that are part of the format
-		curr_format = get_format(to_update['Country'])['format']
-		for field in list(address):
-			if field not in curr_format or field == 'Country':
-				del address[field]
-			else:
-				to_update[field] = address[field]
+		try:
+			# see if the address exists in the database for updating
+			to_update = address_collection.find_one({"_id": ObjectId(address_id)})
+			if not to_update:
+				return get_response(400, {"result": "Address has not yet been created."})
 
-		if len(address) == 0:
-			return get_response(400, {"result": "No valid fields to update."})
+			# make sure that we are only updating fields that are part of the format
+			curr_format = get_format(to_update['Country'])['format']
+			for field in list(address):
+				if field not in curr_format or field == 'Country':
+					del address[field]
+				else:
+					to_update[field] = address[field]
 
-		# update the item and return the new address
-		address_collection.update_one({"_id": ObjectId(addressId)}, {"$set": address}, upsert=False)
-		return get_response(200, {"result": json_format(to_update)})
-	except InvalidId:
-		return get_response(400, {"result": "Invalid ObjectId sequence"})
+			if len(address) == 0:
+				return get_response(400, {"result": "No valid fields to update."})
 
-# allow the user to retrieve all stored addresses
-@app.route('/addresses')
-def get_addresses():
-	query = {}
-	for arg in request.args:
-		data = request.args.get(arg)
-		query[arg] = {"$regex": ".*" + data + ".*"}
-
-	t_list = []
-	for item in address_collection.find(query).limit(10):
-		t_list.append(json_format(item))
-
-	return get_response(200, {"result": t_list})
+			# update the item and return the new address
+			address_collection.update_one({"_id": ObjectId(address_id)}, {"$set": address}, upsert=False)
+			return get_response(200, {"result": json_format(to_update)})
+		except InvalidId:
+			return get_response(400, {"result": "Invalid ObjectId sequence"})
 
 
 # allow the user to search based on a country specific format
-@app.route('/addresses/country/<string:country>')
-def get_by_country(country):
-	addr_format = get_format(country)
+@namespace.route('/country/<string:country>')
+class GetByCountry(Resource):
+	def get(self, country):
+		addr_format = get_format(country)
 
-	if addr_format is None:
-		return get_response(400, {"result": "Country is not currently handled by this API."})
+		if addr_format is None:
+			return get_response(400, {"result": "Country is not currently handled by this API."})
 
-	query = {"Country": country}
-	for field in addr_format:
-		arg = request.args.get(field)
-		if arg is not None:
-			query[field] = {"$regex": ".*" + arg + ".*"}
+		query = {"Country": country}
+		for field in addr_format:
+			arg = request.args.get(field)
+			if arg is not None:
+				query[field] = {"$regex": ".*" + arg + ".*"}
 
-	t_list = []
-	for item in address_collection.find(query).limit(10):
-		t_list.append(json_format(item))
+		t_list = []
+		for item in address_collection.find(query).limit(10):
+			t_list.append(json_format(item))
 
-	return get_response(200, {"result": t_list})
-
-
-# get a specific address based upon the identifier
-@app.route('/addresses/<addressId>')
-def get_address(addressId):
-	try:
-		result = address_collection.find({"_id": ObjectId(addressId)})
-		item = {}
-		if result.count() == 1:
-			item = json_format(result[0])
-		return get_response(200, {"result": item})
-	except InvalidId:
-		return get_response(400, {"result": "Invalid ObjectId sequence"})
+		return get_response(200, {"result": t_list})
 
 
 if __name__ == '__main__':
-	app.run()
+	flask_app.run()
