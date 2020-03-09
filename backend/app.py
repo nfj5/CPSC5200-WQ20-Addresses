@@ -14,7 +14,7 @@ CORS(flask_app)
 app = Api(
 		app=flask_app,
 		version=VERSION,
-		name="AddressAPI",
+		title="AddressAPI",
 		description="API for storing/updating/retrieving world addresses.")
 
 namespace = app.namespace('addresses', description='Main API version ' + VERSION)
@@ -26,6 +26,7 @@ address_collection = db["Addresses"]
 
 addr_formats = None
 
+# region Helper Functions
 
 # construct a Flask Response object
 def get_response(code, content):
@@ -107,12 +108,16 @@ def verify_address(address, country_code):
 
 	return True
 
+# endregion
+
 
 # allow the user to read address formats, and provide accessibility for frontend
 @format_namespace.route('/')
 class GetFormats(Resource):
 	def get(self):
 		return get_response(200, get_format())
+
+# region Address API Endpoints
 
 
 @namespace.route('/')
@@ -213,6 +218,8 @@ class GetByCountry(Resource):
 			t_list.append(json_format(item))
 
 		return get_response(200, t_list)
+
+# endregion
 
 
 if __name__ == '__main__':
