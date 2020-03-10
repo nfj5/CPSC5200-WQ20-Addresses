@@ -162,7 +162,7 @@ class Addresses(Resource):
 			query[arg] = {"$regex": ".*" + data + ".*"}
 
 		t_list = []
-		for item in address_collection.find(query).limit(10):
+		for item in address_collection.find(query):
 			t_list.append(json_format(item))
 
 		return get_response(200, t_list)
@@ -251,6 +251,8 @@ class GetByCountry(Resource):
 		if addr_format is None:
 			return get_response(400, {"result": "Country is not currently handled by this API."})
 
+		addr_format = addr_format['format']
+
 		query = {"Country": country}
 		for field in addr_format:
 			arg = request.args.get(field)
@@ -258,7 +260,7 @@ class GetByCountry(Resource):
 				query[field] = {"$regex": ".*" + arg + ".*"}
 
 		t_list = []
-		for item in address_collection.find(query).limit(10):
+		for item in address_collection.find(query):
 			t_list.append(json_format(item))
 
 		return get_response(200, t_list)
