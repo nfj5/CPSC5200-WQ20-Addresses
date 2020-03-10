@@ -7,18 +7,18 @@
 <body>
     <h2 id="loading">Loading...</h2>
 
-    <form action="#" id="insert_form" style="display:none; width: 40%;">
+    <div id="insert_form" style="display:none; width: 40%;">
         <h2>Search or Create a New Address</h2>
-        <div>
+        <div id="fields">
             <b>Country</b><br>
-            <select id="country_dropdown"></select>
+            <select id="Country" style="margin-top: 10px;"></select>
+            <div id="dynamic_fields" style="margin-top: 10px;"></div>
         </div>
-        <div id="fields" style="margin-top: 10px;"></div>
         <div>
-                <input type="submit" id="search" value="Search">
-                <input type="submit" id="create" value="Create">
+            <button id="search">Search</button>
+            <button id="create">Create</button>
         </div>
-    </form>
+    </div>
 
     <!-- Load JS files -->
     <script src="./jquery.min.js"></script>

@@ -9,25 +9,20 @@ $(document).ready(function() {
 	$.getJSON("http://localhost:5000/formats").done(function(response) {
 		addr_formats = response;
 		for (let country in addr_formats) {
-			$("#country_dropdown").append(`<option value="${country}">${addr_formats[country]['name']}</option>`);
+			$("#Country").append(`<option value="${country}">${addr_formats[country]['name']}</option>`);
 		}
 
 		$("#loading").hide();
 		$("#insert_form").show();
 
-		// TODO: We should not default to the first country
-		// Let's leave blank and put a msg:
-		// Please select a country
-		// When empty can search all countries.
-		// set the form to the first country by default
 		let start = Object.keys(addr_formats)[0];
-		$("#country_dropdown").val(null);
+		$("#Country").val(null);
 	}).fail(function(request, status, err) {
 		$("#loading").html("Failed to load country formats. No response from server.");
 	});
 
 	// change fields when the dropdown changes
-	$("#country_dropdown").change(function(){
+	$("#Country").change(function(){
 		setForm($(this).val());
 	});
 
@@ -42,7 +37,7 @@ $(document).ready(function() {
 
 			// handle dropdown (dictionary?)
 			if (typeof format[field] === "object") {
-				form_content += '<select id="">';
+				form_content += '<select id="' + field + '">';
 				for (let option in format[field]) {
 					form_content += '<option value="' + option + '">' + format[field][option] + '</option>';
 				}
@@ -51,13 +46,13 @@ $(document).ready(function() {
 
 			// otherwise, plain text
 			else {
-				form_content += '<input id=""  size="34">';
+				form_content += '<input id="' + field + '"  size="34">';
 			}
 
 			form_content += '</div>';
 		}
 
-		$("#fields").html(form_content);
+		$("#dynamic_fields").html(form_content);
 	}
 
 	$("#search").click(function() {
@@ -65,7 +60,23 @@ $(document).ready(function() {
 	});
 
 	$("#create").click(function() {
-		// $.post("/addresses")
+		let request = {};
+
+		$("#fields").find(":input").each(function() {
+			request[this.id] = this.val;
+		});
+
+		$.ajax({
+			type: "POST",
+			url: "http://localhost:5000/addresses",
+			contentType: "application/json",
+			data: JSON.stringify(request),
+			dataType: "json"
+		}).done(function(response) {
+			console.log(response);
+		}).fail(function() {
+			console.log("Failed");
+		});
 	});
 
 });

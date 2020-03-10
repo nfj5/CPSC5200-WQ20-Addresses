@@ -10,7 +10,9 @@ import pymongo
 VERSION = "0.1.0"
 
 flask_app = Flask(__name__)
-CORS(flask_app)
+CORS(flask_app, resources={r"/*": {"origins": "*"}}, headers='Content-Type')
+flask_app.config.from_object(__name__)
+
 app = Api(
 		app=flask_app,
 		version=VERSION,
