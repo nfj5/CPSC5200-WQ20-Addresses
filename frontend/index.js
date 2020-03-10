@@ -1,14 +1,12 @@
 $(document).ready(function() {
 
+    // set timeout for ajax functions
+    $.ajaxSetup({timeout: 1000});
+
     let addr_formats = null;
 
     // load formats
-    $.get("http://localhost:5000/formats", function(response){
-        if (!response) {
-            $("#loading").html("Failed to load formats");
-            return;
-        }
-
+    $.getJSON("http://localhost:5000/formats").done(function(response) {
         addr_formats = response;
         for (let country in addr_formats) {
             $("#country_dropdown").append(`<option value="${country}">${addr_formats[country]['name']}</option>`);
@@ -24,6 +22,8 @@ $(document).ready(function() {
         // set the form to the first country by default
         let start = Object.keys(addr_formats)[0];
         $("#country_dropdown").val(null);
+    }).fail(function(request, status, err) {
+        $("#loading").html("Failed to load country formats. No response from server.");
     });
 
     // change fields when the dropdown changes
