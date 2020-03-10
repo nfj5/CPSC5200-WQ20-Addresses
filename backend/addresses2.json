@@ -30,7 +30,7 @@
         "QC": "Quebec",
         "SK": "Saskatchewan"
       },
-      "PostalCode": "^\\d{5}$"
+      "PostalCode": "^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy]{1}\\d{1}[A-Za-z]{1}\\d{1}[A-Za-z]{1}\\d{1}$"
     }
   },
   "MX": {
